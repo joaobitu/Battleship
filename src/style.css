@@ -1,0 +1,92 @@
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+}
+#main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    height: 100vh;
+}
+
+#conversion-choices {
+    display: flex;
+    justify-content: center;
+   
+}
+#content-display {
+    display: flex;
+    flex-direction: column;
+    gap: 5vh;
+}
+#search-section {
+    margin-top: 5vh;
+}
+
+#location-display, #temperature-display, #maxTemp-minTemp-display, #clouds-display, #rain-display, #wind-speed-display {
+    display: flex;
+    justify-content: center;
+    
+    border-radius: 6px;
+    padding: 8px;
+    
+}
+#maxTemp-minTemp-display {
+    border: 1px solid white;
+    border-radius: 6px;
+    background-color: white;
+    box-shadow: 2px 2px 2px grey;
+}
+#clouds-display {
+    border: 1px solid white;
+    border-radius: 6px;
+    background-color: white;
+    box-shadow: 2px 2px 2px grey;
+}
+
+#wind-speed-display {
+    border: 1px solid white;
+    border-radius: 6px;
+    background-color: white;
+    box-shadow: 2px 2px 2px grey;
+}
+#temp-rain-display {
+    border: 1px solid white;
+    border-radius: 6px;
+    background-color: white;
+    box-shadow: 2px 2px 2px grey;
+}
+#location-display {
+    justify-content: center;
+    border: 1px solid white;
+    background-color: white;
+    box-shadow: 2px 2px 2px grey;
+}
+
+#temperature-display {
+    font-size: 50px;
+}
+
+#rain-display {
+    column-gap: 0;
+    margin-top: 0;
+}
+
+#search-section {
+    margin-bottom: 10vh;
+}
+
+.blue {
+    background-color: rgb(170, 218, 238);
+}
+
+.red {
+    background-color:rgb(192, 126, 79);
+}
+
+.azure {
+    background-color: rgb(116,179,2);
+}

@@ -1,5 +1,5 @@
 {
-  "name": "weather-app",
+  "name": "battleship",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/joaobitu/weather-app.git"
+    "url": "git+https://github.com/joaobitu/Battleship.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/joaobitu/weather-app/issues"
+    "url": "https://github.com/joaobitu/Battleship/issues"
   },
-  "homepage": "https://github.com/joaobitu/weather-app#readme",
+  "homepage": "https://github.com/joaobitu/Battleship#readme",
   "devDependencies": {
     "@babel/cli": "^7.19.3",
     "@babel/core": "^7.19.6",

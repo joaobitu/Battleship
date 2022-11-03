@@ -1,55 +1,52 @@
-import {
-  sum,
-  capitalize,
-  reverseString,
-  calculator,
-  ceaserCipher,
-  analyzeArray,
-} from "./sum";
+import { Gameboard, Ship, Player } from "./index.js";
+// test first... battleship, lets gooo!!!
 
-it("sums", () => {
-  expect(sum(1, 2)).toBe(3);
+it("hit function decreases hp", () => {
+  let initialHP = 1;
+  let testShip = Ship(initialHP, "vertical");
+  testShip.hit();
+  expect(testShip.getHP()).toBe(initialHP - 1);
 });
 
-it("capitalize", () => {
-  expect(capitalize("banana")).toBe("Banana");
+it("sunks", () => {
+  let initialHP = 1;
+  let testShip = Ship(initialHP, "vertical");
+  testShip.hit();
+  expect(testShip.isSunk()).toBe(true);
 });
 
-it("reverse", () => {
-  expect(reverseString("cheirosa")).toBe("asoriehc");
+it("gets orientation", () => {
+  let testShip = Ship(10, "vertical");
+  expect(testShip.getOrientation()).toBe("vertical");
 });
 
-it("multiply", () => {
-  expect(calculator.multiply(2, 3)).toBe(6);
-});
-it("add", () => {
-  expect(calculator.add(2, 3)).toBe(5);
-});
-it("reduce", () => {
-  expect(calculator.reduce(2, 3)).toBe(-1);
-});
-it("divide", () => {
-  expect(calculator.divide(2, 3)).toBeCloseTo(0.666);
+it("places ship correctly", () => {
+  let board = Gameboard();
+  let initialHP = 2;
+  let testShip = Ship(initialHP, "vertical");
+  board.placeShip(0, 0, testShip);
+  expect(board.getGameboard()).toEqual([
+    [[testShip, testShip], [], [], [], [], [], [], [], [], [], [], []],
+  ]);
 });
 
-it("cypher works", () => {
-  expect(ceaserCipher("mae", 1)).toBe("nbf");
+it("cannot place ship where there is a ship already", () => {
+  let board = Gameboard();
+  let initialHP = 2;
+  let testShip = Ship(initialHP, "vertical");
+  let testShip2 = Ship(initialHP, "vertical");
+  board.placeShip(0, 0, testShip);
+  expect(board.placeShip(0, 0, testShip2)).toBe("no space for this ship");
 });
 
-it("cypher wraps at z", () => {
-  expect(ceaserCipher("maz", 1)).toBe("nba");
+it("attacks the placed ship", () => {
+  let board = Gameboard();
+  let initialHP = 2;
+  let testShip = Ship(initialHP, "vertical");
+  board.placeShip(0, 0, testShip);
+  board.receiveAttack(0, 0);
+  board.receiveAttack(0, 1);
+  expect(testShip.getHP()).toBe(0);
 });
 
-it("cypher takes keepts rest of structure", () => {
-  expect(ceaserCipher("maz ,", 1)).toBe("nba ,");
-});
-
-it("analyze array", () => {
-  const result = {
-    average: 4,
-    min: 1,
-    max: 8,
-    length: 6,
-  };
-  expect(analyzeArray([1, 8, 3, 4, 2, 6])).toMatchObject(result);
-});
+it("ai plays a random attack", () => {});

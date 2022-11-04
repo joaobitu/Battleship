@@ -1,4 +1,4 @@
-import { Gameboard, Ship, Player } from "./index.js";
+import { Gameboard, Ship, Player } from "./gamelogic";
 // test first... battleship, lets gooo!!!
 
 it("hit function decreases hp", () => {
@@ -24,19 +24,28 @@ it("places ship correctly", () => {
   let board = Gameboard();
   let initialHP = 2;
   let testShip = Ship(initialHP, "vertical");
-  board.placeShip(0, 0, testShip);
-  expect(board.getGameboard()).toEqual([
-    [[testShip, testShip], [], [], [], [], [], [], [], [], [], [], []],
-  ]);
+  board.placeShip(0, 2, testShip);
+  console.log(board.getGameboard());
+  expect(
+    board.getGameboard()[0][2] === testShip &&
+      board.getGameboard()[0][3] === testShip
+  ).toEqual(true);
 });
-
+it("cannot place ship if there isnt space horizontally on the board", () => {
+  let board = Gameboard();
+  let initialHP = 2;
+  let testShip = Ship(initialHP, "horizontal");
+  expect(board.placeShip(12, 0, testShip)).toBe(
+    "this ship doesnt fit horizontally"
+  );
+});
 it("cannot place ship where there is a ship already", () => {
   let board = Gameboard();
   let initialHP = 2;
   let testShip = Ship(initialHP, "vertical");
   let testShip2 = Ship(initialHP, "vertical");
   board.placeShip(0, 0, testShip);
-  expect(board.placeShip(0, 0, testShip2)).toBe("no space for this ship");
+  expect(board.placeShip(0, 0, testShip2)).toBe("there is a ship already");
 });
 
 it("attacks the placed ship", () => {
@@ -49,4 +58,12 @@ it("attacks the placed ship", () => {
   expect(testShip.getHP()).toBe(0);
 });
 
-it("ai plays a random attack", () => {});
+it("ai plays a random attack", () => {
+  let board = Gameboard();
+  let initialHP = 2;
+  let testShip = Ship(initialHP, "vertical");
+  board.placeShip(0, 0, testShip);
+  let computer = Player("computer");
+  computer.playAI(board);
+  expect(computer.getLastMove().x !== undefined).toBe(true);
+});

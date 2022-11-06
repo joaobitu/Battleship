@@ -5,6 +5,11 @@ I need a ship function, that can see the length of the ship.. take it as an argu
 
 const Ship = (length, orientation, name) => {
   let hp = length;
+  let owner = name;
+
+  const getOwner = () => {
+    return owner;
+  };
 
   const getOrientation = () => {
     return orientation;
@@ -22,14 +27,13 @@ const Ship = (length, orientation, name) => {
 
   const isSunk = () => {
     if (hp == 0) {
-      name.sunkenShipCount();
       return true;
     } else {
       return false;
     }
   };
 
-  return { isSunk, hit, getHP, getLength, getOrientation };
+  return { isSunk, hit, getHP, getLength, getOrientation, getOwner };
 };
 
 const Gameboard = (name) => {
@@ -40,7 +44,7 @@ const Gameboard = (name) => {
   const getGameboard = () => {
     return gameboard;
   };
-  const placeShip = (x, y, ship) => {
+  const placeShip = (x, y, ship, playerObject) => {
     if (ship.getOrientation() == "Vertical" && y + ship.getLength() > 10) {
       return "this ship doesnt fit vertically";
     }
@@ -71,7 +75,7 @@ const Gameboard = (name) => {
         gameboard[x + i][y] = ship;
       }
     }
-
+    playerObject.shipsArray().push(ship);
     return "ship succesfully placed";
   };
   const receiveAttack = (x, y) => {
@@ -99,6 +103,19 @@ const Player = (name) => {
     x: undefined,
     y: undefined,
   };
+  let ships = [];
+
+  const isGameOver = () => {
+    let i = 0;
+    ships.forEach((e) => {
+      e.isSunk() ? i++ : i--;
+    });
+    if (i == 5) return true;
+  };
+
+  const shipsArray = () => {
+    return ships;
+  };
   const getSunkenShips = () => {
     return sunkenShips;
   };
@@ -116,10 +133,10 @@ const Player = (name) => {
     turn++;
   };
   const playHuman = (x, y, computerBoard) => {
-    if (x !== lastMove.x || y !== lastMove.y) {
+    if (document.getElementById(`${x}${y}b`).style.border !== "3px solid red") {
       computerBoard.receiveAttack(x, y);
       lastMove.x = x;
-      lastMove.x = y;
+      lastMove.y = y;
       return true;
     }
     return false;
@@ -144,8 +161,6 @@ const Player = (name) => {
       }
       lastMove.x = x;
       lastMove.y = y;
-      console.log("x is: " + lastMove.x);
-      console.log("y is: " + lastMove.y);
     } else {
       let x = randomNumber(1, 0);
       let y = randomNumber(1, 0);
@@ -179,9 +194,6 @@ const Player = (name) => {
           y = randomNumber(i, 0);
           i++;
         }
-
-        console.log(lastMove.x + x + " x  inside the loop");
-        console.log(lastMove.y + y + " y inside the loop");
       }
       if (humanBoard.receiveAttack(lastMove.x + x, lastMove.y + y)) {
         lastMove.hit = true;
@@ -201,6 +213,8 @@ const Player = (name) => {
     getLastMove,
     sunkenShipCount,
     getSunkenShips,
+    shipsArray,
+    isGameOver,
   };
 };
 

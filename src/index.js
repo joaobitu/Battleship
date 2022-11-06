@@ -13,6 +13,7 @@ import "./style.css";
 const playerGrid = document.querySelector("#player-grid");
 const computerGrid = document.querySelector("#computer-grid");
 const orientationButton = document.querySelector("#orientation-button");
+const startGame = document.querySelector("start-game");
 
 function randomNumber(max, min) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -52,18 +53,14 @@ playerGrid.addEventListener("click", (e) => {
   const coordinates = e.target.id;
   const x = Number(coordinates.substr(0, 1));
   const y = Number(coordinates.substr(1, 1));
+  if (gameStage.getShipsPlaced() == 4) {
+    orientationButton.textContent = "Start Game";
+  }
   if (gameStage.getShipsPlaced() < 5) {
     gameStage.placementPhase(x, y);
-  } else {
-    computerGrid.style.display = "flex";
-    orientationButton.style.display = "none";
-    while (gameStage.getShipsPlaced() < 10) {
-      gameStage.placementPhase(randomNumber(9, 0), randomNumber(9, 0));
-    }
-    console.log(computerBoard.getGameboard());
   }
 });
-
+//startGame.addEventListener("click", (e) => {});
 computerGrid.addEventListener("click", (e) => {
   const coordinates = e.target.id;
   const x = Number(coordinates.substr(0, 1));
@@ -74,9 +71,9 @@ computerGrid.addEventListener("click", (e) => {
     let computerMove = computerPlayer.getLastMove();
     displayController.renderAttack(computerMove.x, computerMove.y, "computer");
   }
-  if (humanPlayer.getSunkenShips() == 5) {
+  if (humanPlayer.isGameOver()) {
     displayController.renderGameOver("human");
-  } else if (computerPlayer.getSunkenShips() == 5) {
+  } else if (computerPlayer.isGameOver()) {
     displayController.renderGameOver("computer");
   }
 });
@@ -84,6 +81,13 @@ computerGrid.addEventListener("click", (e) => {
 // orientation button
 
 orientationButton.addEventListener("click", (e) => {
+  if (orientationButton.textContent == "Start Game") {
+    computerGrid.style.display = "flex";
+    orientationButton.style.display = "none";
+    while (gameStage.getShipsPlaced() < 10) {
+      gameStage.placementPhase(randomNumber(9, 0), randomNumber(9, 0));
+    }
+  }
   if (orientationButton.textContent === "Horizontal") {
     orientationButton.textContent = "Vertical";
   } else {
@@ -95,6 +99,9 @@ const displayController = (() => {
   const renderAttack = (x, y, name) => {
     if (name === "human") {
       document.getElementById(`${x}${y}b`).style.border = "3px solid red";
+      if (computerBoard.getGameboard()[x][y] !== undefined) {
+        document.getElementById(`${x}${y}b`).style.backgroundColor = "black";
+      }
     } else {
       document.getElementById(`${x}${y}`).style.border = "3px solid red";
     }
@@ -133,7 +140,8 @@ const gameStage = (() => {
           humanPlayer
         );
         if (
-          humanBoard.placeShip(x, y, destroyerShip) == "ship succesfully placed"
+          humanBoard.placeShip(x, y, destroyerShip, humanPlayer) ==
+          "ship succesfully placed"
         ) {
           shipsPlaced++;
         }
@@ -145,7 +153,7 @@ const gameStage = (() => {
           humanPlayer
         );
         if (
-          humanBoard.placeShip(x, y, destructiveShip) ==
+          humanBoard.placeShip(x, y, destructiveShip, humanPlayer) ==
           "ship succesfully placed"
         ) {
           shipsPlaced++;
@@ -153,14 +161,18 @@ const gameStage = (() => {
         break;
       case shipsPlaced == 2:
         const bigShip = Ship(4, orientationButton.textContent, humanPlayer);
-        if (humanBoard.placeShip(x, y, bigShip) == "ship succesfully placed") {
+        if (
+          humanBoard.placeShip(x, y, bigShip, humanPlayer) ==
+          "ship succesfully placed"
+        ) {
           shipsPlaced++;
         }
         break;
       case shipsPlaced == 3:
         const funnyShip = Ship(3, orientationButton.textContent, humanPlayer);
         if (
-          humanBoard.placeShip(x, y, funnyShip) == "ship succesfully placed"
+          humanBoard.placeShip(x, y, funnyShip, humanPlayer) ==
+          "ship succesfully placed"
         ) {
           shipsPlaced++;
         }
@@ -168,7 +180,8 @@ const gameStage = (() => {
       case shipsPlaced == 4:
         const smallShip = Ship(2, orientationButton.textContent, humanPlayer);
         if (
-          humanBoard.placeShip(x, y, smallShip) == "ship succesfully placed"
+          humanBoard.placeShip(x, y, smallShip, humanPlayer) ==
+          "ship succesfully placed"
         ) {
           shipsPlaced++;
         }
@@ -179,8 +192,12 @@ const gameStage = (() => {
           computerPlayer
         );
         if (
-          computerBoard.placeShip(x, y, destroyerShipComputer) ==
-          "ship succesfully placed"
+          computerBoard.placeShip(
+            x,
+            y,
+            destroyerShipComputer,
+            computerPlayer
+          ) == "ship succesfully placed"
         ) {
           shipsPlaced++;
         }
@@ -192,8 +209,12 @@ const gameStage = (() => {
           computerPlayer
         );
         if (
-          computerBoard.placeShip(x, y, destructiveShipComputer) ==
-          "ship succesfully placed"
+          computerBoard.placeShip(
+            x,
+            y,
+            destructiveShipComputer,
+            computerPlayer
+          ) == "ship succesfully placed"
         ) {
           shipsPlaced++;
         }
@@ -205,7 +226,7 @@ const gameStage = (() => {
           computerPlayer
         );
         if (
-          computerBoard.placeShip(x, y, bigShipComputer) ==
+          computerBoard.placeShip(x, y, bigShipComputer, computerPlayer) ==
           "ship succesfully placed"
         ) {
           shipsPlaced++;
@@ -218,7 +239,7 @@ const gameStage = (() => {
           computerPlayer
         );
         if (
-          computerBoard.placeShip(x, y, funnyShipComputer) ==
+          computerBoard.placeShip(x, y, funnyShipComputer, computerPlayer) ==
           "ship succesfully placed"
         ) {
           shipsPlaced++;
@@ -231,7 +252,7 @@ const gameStage = (() => {
           computerPlayer
         );
         if (
-          computerBoard.placeShip(x, y, smallShipComputer) ==
+          computerBoard.placeShip(x, y, smallShipComputer, computerPlayer) ==
           "ship succesfully placed"
         ) {
           shipsPlaced++;
